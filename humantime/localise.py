@@ -1,15 +1,23 @@
 import json
 from pathlib import Path
+from functools import lru_cache
 
 LANGUAGE = "en-US"
 
+LOCATIONS = [Path(__file__).parent / "translations"]
+
+@lru_cache
+def get_translation_data(language):
+    for location in LOCATIONS:
+        location_file = location / f"{language}.json"
+        if location_file.is_file():
+            with location_file.open() as fp:
+                return json.load(fp)
+    raise AttributeError("Language not found")
+
 
 def format_distance(key, count):
-    with (Path(__file__).parent / "translations"/f"{LANGUAGE}.json").open() as fp:
-        translation_data = json.load(fp)
-    if not translation_data:
-        raise AttributeError("Language not found")
-
+    translation_data = get_translation_data(LANGUAGE)
     translation_value = translation_data[key]
     if type(translation_value) == str:
         result = translation_value
