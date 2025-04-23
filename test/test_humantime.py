@@ -5,8 +5,7 @@ import humantime
 
 def time_delta(days=0, hours=0, minutes=0, seconds=0):
     _date = (datetime.now() - timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds))
-    _datetime = datetime.combine(_date.date(), _date.time())
-    return _datetime
+    return _date
 
 
 def test_time_between():
@@ -17,7 +16,9 @@ def test_time_between():
 def test_less_than_a_minute():
     # | 0 ... 30 secs                                                     | less than a minute  |
     assert humantime.time_since(time_delta(seconds=1)) == "less than a minute"
-    assert humantime.time_since(time_delta(seconds=30)) == "less than a minute"
+    t = time_delta(seconds=30)
+    print("Our total seconds are", (t - datetime.now(t.tzinfo)).total_seconds())
+    assert humantime.time_since(t) == "less than a minute"
 
 
 def test_1_minute():

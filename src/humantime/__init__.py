@@ -70,15 +70,14 @@ def get_delta(date: datetime):
 
 
 def _time_string(delta: TimeDelta):
-    seconds = delta.total_seconds
+    seconds = round(delta.total_seconds)
     minutes = round(seconds / 60)
-    if minutes < 2:
-        if minutes == 0:
-            return localise.format_distance('lessThanXMinutes', 1)
-        else:
-            return localise.format_distance('xMinutes', minutes)
 
-    # 2 mins up to 0.75 hrs
+    # 0s to 30s
+    if seconds <= 30:
+        return localise.format_distance('lessThanXMinutes', 1)
+
+    # 30s up to 0.75 hrs
     elif minutes < 45:
         return localise.format_distance('xMinutes', minutes)
 

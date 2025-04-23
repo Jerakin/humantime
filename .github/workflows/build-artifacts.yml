@@ -56,9 +56,16 @@ jobs:
 
   release:
     name: Create release
+    needs: build
     runs-on: ubuntu-latest
     if: github.ref_type == 'tag'
     steps:
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: humantime-*
+        path: dist
+        merge-multiple: true
+
     - name: Release
       uses: softprops/action-gh-release@v2
       with:
