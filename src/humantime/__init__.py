@@ -35,7 +35,7 @@ def _q_n_r(a, b):
 
 class TimeDelta:
     def __init__(self, dt, now=None):
-        now = datetime.now() if now is None else now
+        now = datetime.now(dt.tzinfo) if now is None else now
         self.delta = now - dt
         self.day = abs(self.delta.days)
         self.second = abs(self.delta.seconds)
