@@ -6,7 +6,7 @@ LANGUAGE = "en-US"
 
 LOCATIONS = [Path(__file__).parent / "translations"]
 
-@lru_cache
+@lru_cache(maxsize=None)
 def get_translation_data(language):
     for location in LOCATIONS:
         location_file = location / f"{language}.json"
