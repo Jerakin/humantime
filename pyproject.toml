@@ -21,6 +21,7 @@ dependencies = [
 dev = [
   "ruff",
   "pytest",
+  "pytest-cov",
   "build",
 ]
 

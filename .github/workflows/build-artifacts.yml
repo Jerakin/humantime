@@ -1,4 +1,4 @@
-name: Upload Python 🐍 distribution to artifacts
+name: Build
 
 on: push
 
@@ -29,3 +29,37 @@ jobs:
       with:
         name: python-package-distributions
         path: dist/
+
+  tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ "3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13" ]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+    - name: Test with pytest
+      run: |
+        pip install .[dev]
+        pytest --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
+    - name: Upload pytest test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: pytest-results-${{ matrix.python-version }}
+        path: junit/test-results-${{ matrix.python-version }}.xml
+      # Use always() to always run this step to publish test results when there are test failures
+      if: ${{ always() }}
+
+  release:
+    name: Create release
+    runs-on: ubuntu-latest
+    if: github.ref_type == 'tag'
+    steps:
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: dist/*
